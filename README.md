@@ -49,6 +49,33 @@ esse arquivo seja mantido.
 Para encerrar o servidor, pressione `Ctrl+C` no terminal. Em uma nova sessão,
 ative novamente a `.venv` antes de executar o comando do servidor.
 
+## Testes
+
+Na raiz do projeto, com a `.venv` ativa e as dependências instaladas, execute:
+
+```powershell
+python -m pytest tests/test_tasks.py -v
+```
+
+O resultado esperado é `8 passed`. A opção `-v` mostra o nome e o resultado de
+cada caso. Não é necessário iniciar o Uvicorn: os testes usam o `TestClient`
+do FastAPI para enviar requisições diretamente à aplicação.
+
+Os oito casos verificam:
+
+- Criação com identificador gerado e situação inicial pendente.
+- Rejeição de título vazio.
+- Rejeição de título contendo apenas espaços.
+- Consulta de tarefa inexistente com retorno 404.
+- Edição parcial preservando os campos omitidos.
+- Exclusão com retorno 204 e erros 404 nas tentativas posteriores.
+- Listagem com filtros de pendentes e concluídas.
+- Persistência entre encerramento e nova inicialização do ciclo de vida da aplicação.
+
+Cada caso utiliza um banco SQLite em uma pasta temporária, separado do
+`tasks.db` local. No teste de persistência, as duas inicializações usam o mesmo
+banco temporário. Os testes ficam em `tests/test_tasks.py`.
+
 ## Arquitetura
 
 A aplicação é uma API local em Python, com FastAPI e SQLite. As operações

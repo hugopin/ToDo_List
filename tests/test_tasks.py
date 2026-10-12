@@ -83,3 +83,25 @@ def test_update_title_preserves_omitted_fields(tmp_path, monkeypatch):
         saved = client.get(f"/tasks/{task_id}")
         assert saved.status_code == 200
         assert saved.json() == expected
+
+
+def test_delete_task_returns_204_and_removes_task(tmp_path, monkeypatch):
+    """Excluir uma tarefa retorna uma resposta vazia e impede nova consulta."""
+    monkeypatch.setattr(database, "DATABASE_PATH", tmp_path / "tasks.db")
+
+    with TestClient(app) as client:
+        created = client.post("/tasks", json={"title": "Teste de exclusão"})
+        assert created.status_code == 201
+        task_id = created.json()["id"]
+
+        deleted = client.delete(f"/tasks/{task_id}")
+        assert deleted.status_code == 204
+        assert deleted.content == b""
+
+        missing = client.get(f"/tasks/{task_id}")
+        assert missing.status_code == 404
+        assert missing.json() == {"detail": "Tarefa não encontrada."}
+
+        repeated = client.delete(f"/tasks/{task_id}")
+        assert repeated.status_code == 404
+        assert repeated.json() == {"detail": "Tarefa não encontrada."}

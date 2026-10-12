@@ -54,3 +54,32 @@ def test_get_nonexistent_task_returns_404(tmp_path, monkeypatch):
 
     assert response.status_code == 404
     assert response.json() == {"detail": "Tarefa não encontrada."}
+
+
+def test_update_title_preserves_omitted_fields(tmp_path, monkeypatch):
+    """Editar somente o título preserva os outros campos e salva a alteração."""
+    monkeypatch.setattr(database, "DATABASE_PATH", tmp_path / "tasks.db")
+
+    with TestClient(app) as client:
+        created = client.post(
+            "/tasks",
+            json={"title": "Estudar FastAPI", "description": "Descrição original"},
+        )
+        assert created.status_code == 201
+        task_id = created.json()["id"]
+
+        completed = client.patch(f"/tasks/{task_id}", json={"completed": True})
+        assert completed.status_code == 200
+        original = completed.json()
+        assert original["completed"] is True
+
+        response = client.patch(
+            f"/tasks/{task_id}", json={"title": "Revisar FastAPI"}
+        )
+        expected = {**original, "title": "Revisar FastAPI"}
+        assert response.status_code == 200
+        assert response.json() == expected
+
+        saved = client.get(f"/tasks/{task_id}")
+        assert saved.status_code == 200
+        assert saved.json() == expected

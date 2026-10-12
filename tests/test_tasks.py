@@ -136,3 +136,21 @@ def test_list_tasks_filters_by_completion(tmp_path, monkeypatch):
         completed_tasks = client.get("/tasks", params={"completed": "true"})
         assert completed_tasks.status_code == 200
         assert completed_tasks.json() == [completed_task]
+
+
+def test_task_persists_after_application_restart(tmp_path, monkeypatch):
+    """Uma tarefa continua disponível após reiniciar a aplicação."""
+    monkeypatch.setattr(database, "DATABASE_PATH", tmp_path / "tasks.db")
+
+    with TestClient(app) as client:
+        created = client.post(
+            "/tasks",
+            json={"title": "Estudar persistência", "description": "Manter os dados"},
+        )
+        assert created.status_code == 201
+        original = created.json()
+
+    with TestClient(app) as restarted_client:
+        response = restarted_client.get(f"/tasks/{original['id']}")
+        assert response.status_code == 200
+        assert response.json() == original

@@ -1,8 +1,15 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, Response, status
 
-from app.database import create_task, get_task, init_database, list_tasks, update_task
+from app.database import (
+    create_task,
+    delete_task,
+    get_task,
+    init_database,
+    list_tasks,
+    update_task,
+)
 from app.schemas import TaskCreate, TaskResponse, TaskUpdate
 
 
@@ -50,3 +57,14 @@ def update_task_endpoint(id: int, changes: TaskUpdate):
             detail="Tarefa não encontrada.",
         )
     return task
+
+
+@app.delete("/tasks/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_task_endpoint(id: int) -> Response:
+    """Exclui uma tarefa ou informa que ela não foi encontrada."""
+    if not delete_task(id):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Tarefa não encontrada.",
+        )
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

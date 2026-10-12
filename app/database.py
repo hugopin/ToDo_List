@@ -88,3 +88,15 @@ def update_task(task_id: int, changes: dict) -> dict | None:
                 (task_id,),
             ).fetchone()
     return dict(row) if row is not None else None
+
+
+def delete_task(task_id: int) -> bool:
+    """Exclui uma tarefa e informa se algum registro foi removido."""
+    with closing(get_connection()) as connection:
+        with connection:
+            cursor = connection.execute(
+                "DELETE FROM tasks WHERE id = ?",
+                (task_id,),
+            )
+            deleted = cursor.rowcount > 0
+    return deleted

@@ -43,3 +43,14 @@ def test_create_task_rejects_blank_title(title, tmp_path, monkeypatch):
         listing = client.get("/tasks")
         assert listing.status_code == 200
         assert listing.json() == []
+
+
+def test_get_nonexistent_task_returns_404(tmp_path, monkeypatch):
+    """Consultar um identificador inexistente retorna um erro claro."""
+    monkeypatch.setattr(database, "DATABASE_PATH", tmp_path / "tasks.db")
+
+    with TestClient(app) as client:
+        response = client.get("/tasks/999")
+
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Tarefa não encontrada."}

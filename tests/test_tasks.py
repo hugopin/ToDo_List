@@ -105,3 +105,34 @@ def test_delete_task_returns_204_and_removes_task(tmp_path, monkeypatch):
         repeated = client.delete(f"/tasks/{task_id}")
         assert repeated.status_code == 404
         assert repeated.json() == {"detail": "Tarefa não encontrada."}
+
+
+def test_list_tasks_filters_by_completion(tmp_path, monkeypatch):
+    """A listagem retorna todas as tarefas ou somente a situação solicitada."""
+    monkeypatch.setattr(database, "DATABASE_PATH", tmp_path / "tasks.db")
+
+    with TestClient(app) as client:
+        pending = client.post("/tasks", json={"title": "Tarefa pendente"})
+        assert pending.status_code == 201
+        pending_task = pending.json()
+
+        created = client.post("/tasks", json={"title": "Tarefa concluída"})
+        assert created.status_code == 201
+        completed = client.patch(
+            f"/tasks/{created.json()['id']}", json={"completed": True}
+        )
+        assert completed.status_code == 200
+        completed_task = completed.json()
+        assert completed_task["completed"] is True
+
+        all_tasks = client.get("/tasks")
+        assert all_tasks.status_code == 200
+        assert all_tasks.json() == [pending_task, completed_task]
+
+        pending_tasks = client.get("/tasks", params={"completed": "false"})
+        assert pending_tasks.status_code == 200
+        assert pending_tasks.json() == [pending_task]
+
+        completed_tasks = client.get("/tasks", params={"completed": "true"})
+        assert completed_tasks.status_code == 200
+        assert completed_tasks.json() == [completed_task]

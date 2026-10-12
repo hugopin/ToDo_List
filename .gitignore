@@ -9,6 +9,12 @@ __pycache__/
 .venv/
 venv/
 
+# Banco SQLite local e arquivos auxiliares
+/tasks.db
+/tasks.db-journal
+/tasks.db-wal
+/tasks.db-shm
+
 # Build e distribuição
 build/
 dist/

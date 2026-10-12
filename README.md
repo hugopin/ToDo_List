@@ -49,6 +49,93 @@ esse arquivo seja mantido.
 Para encerrar o servidor, pressione `Ctrl+C` no terminal. Em uma nova sessão,
 ative novamente a `.venv` antes de executar o comando do servidor.
 
+## Endpoints e exemplos de uso
+
+Com o servidor iniciado, abra `/docs`, expanda uma operação, clique em
+**Try it out**, preencha os dados e clique em **Execute**.
+
+| Método | Endereço | Operação | Código de sucesso |
+|---|---|---|---|
+| POST | `/tasks` | Criar uma tarefa pendente | 201 |
+| GET | `/tasks` | Listar todas as tarefas | 200 |
+| GET | `/tasks?completed=false` | Listar tarefas pendentes | 200 |
+| GET | `/tasks?completed=true` | Listar tarefas concluídas | 200 |
+| GET | `/tasks/{id}` | Consultar uma tarefa | 200 |
+| PATCH | `/tasks/{id}` | Editar título, descrição ou conclusão | 200 |
+| DELETE | `/tasks/{id}` | Excluir uma tarefa | 204 |
+
+### Criar uma tarefa
+
+Em `POST /tasks`, envie:
+
+```json
+{
+  "title": "Estudar FastAPI",
+  "description": "Acompanhar o miniprojeto da UFG"
+}
+```
+
+Resposta de exemplo, com código 201:
+
+```json
+{
+  "id": 1,
+  "title": "Estudar FastAPI",
+  "description": "Acompanhar o miniprojeto da UFG",
+  "completed": false
+}
+```
+
+O identificador é gerado automaticamente e pode variar. A descrição pode ser
+omitida; nesse caso, será `null`. Títulos vazios ou contendo apenas espaços
+são rejeitados com código 422.
+
+### Listar e consultar
+
+Em `GET /tasks`, deixe `completed` sem preencher para listar todas as tarefas,
+ou selecione `false` para pendentes e `true` para concluídas. A resposta é uma
+lista; quando não há resultados, retorna `[]` com código 200.
+
+Em `GET /tasks/{id}`, informe o identificador recebido na criação. A resposta
+contém uma única tarefa.
+
+### Editar e alterar a conclusão
+
+Em `PATCH /tasks/{id}`, informe o identificador e envie apenas os campos que
+deseja alterar. Por exemplo, para editar o título:
+
+```json
+{
+  "title": "Revisar FastAPI"
+}
+```
+
+Para marcar como concluída:
+
+```json
+{
+  "completed": true
+}
+```
+
+Use `false` para voltar a pendente. Os campos omitidos mantêm seus valores.
+Para remover a descrição, envie `{"description": null}`. Uma edição válida
+retorna a tarefa atualizada com código 200; título vazio ou valor nulo para
+`title` ou `completed` retorna 422.
+
+### Excluir e consultar erros
+
+Em `DELETE /tasks/{id}`, informe o identificador da tarefa que deseja remover.
+Uma exclusão realizada retorna 204, sem corpo na resposta.
+
+Consultar, editar ou excluir um identificador inexistente retorna 404:
+
+```json
+{
+  "detail": "Tarefa não encontrada."
+}
+```
+
 ## Testes
 
 Na raiz do projeto, com a `.venv` ativa e as dependências instaladas, execute:

@@ -151,7 +151,9 @@ python -m pytest tests/test_tasks.py -v
 
 O resultado esperado é `10 passed`. A opção `-v` mostra o nome e o resultado de
 cada caso. Não é necessário iniciar o Uvicorn: os testes usam o `TestClient`
-do FastAPI para enviar requisições diretamente à aplicação.
+do FastAPI para enviar requisições diretamente à aplicação. O cliente utiliza
+HTTPX2, registrado no `requirements.txt`. A migração do HTTPX para HTTPX2
+resolveu o aviso de descontinuação, e os dez casos passaram após a mudança.
 
 Os dez casos verificam:
 
@@ -281,7 +283,6 @@ de implementação nesta entrega:
 
 - Ampliar os testes para atualização e exclusão de identificadores inexistentes,
   remoção da descrição, retorno de concluída para pendente e filtros sem resultados.
-- Avaliar a atualização do cliente de testes para resolver o aviso de descontinuação.
 - Automatizar a execução dos testes no GitHub Actions.
 - Verificar a instalação e a execução em um ambiente limpo.
 - Conforme novas necessidades, avaliar busca, paginação e uma interface própria.

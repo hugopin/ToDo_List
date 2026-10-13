@@ -249,3 +249,36 @@ O acompanhamento humano incluiu a definição do escopo, a avaliação das propo
 a execução dos comandos e a conferência dos resultados. Não houve medição formal
 de tempo ou comparação com desenvolvimento sem IA; portanto, não são apresentados
 percentuais ou estimativas de ganho de produtividade.
+
+## Limitações e próximos passos
+
+### Limitações da primeira versão
+
+Esta versão tem finalidade didática e é executada localmente. Seu escopo é o
+gerenciamento básico de tarefas, com persistência em SQLite.
+
+- Não há login, autenticação, autorização ou separação de tarefas por usuário.
+- Não há prioridades, prazos, notificações ou lembretes.
+- A interação é feita pela documentação do FastAPI; não existe interface visual própria.
+- A listagem permite filtrar por conclusão, mas não possui busca por texto ou paginação.
+- Não foram realizados testes de carga, concorrência ou instalação em outros sistemas operacionais.
+- Os oito casos automatizados cobrem os cenários documentados, mas não todas as
+  combinações de entradas e operações. A persistência é verificada reiniciando o
+  ciclo de vida da aplicação dentro do processo de testes.
+
+### Possíveis evoluções
+
+As sugestões abaixo são possibilidades para versões futuras, sem compromisso
+de implementação nesta entrega:
+
+- Ampliar os testes para atualização e exclusão de identificadores inexistentes,
+  remoção da descrição, retorno de concluída para pendente e filtros sem resultados.
+- Centralizar a preparação do banco temporário em uma fixture compartilhada,
+  reduzindo repetição entre os testes.
+- Avaliar a atualização do cliente de testes para resolver o aviso de descontinuação.
+- Automatizar a execução dos testes no GitHub Actions.
+- Verificar a instalação e a execução em um ambiente limpo.
+- Conforme novas necessidades, avaliar busca, paginação e uma interface própria.
+
+Recursos como múltiplos usuários, prioridades, prazos e notificações exigiriam
+novas regras e uma revisão do escopo antes de serem incorporados.

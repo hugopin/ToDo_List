@@ -173,6 +173,19 @@ Cada caso utiliza um banco SQLite em uma pasta temporária, separado do
 banco temporário. A fixture `temporary_database` centraliza a configuração do
 caminho e mantém um banco separado por caso. Os testes ficam em `tests/test_tasks.py`.
 
+### Validação em um ambiente virtual novo
+
+A instalação foi conferida em um ambiente virtual separado da `.venv` de
+desenvolvimento, criado na pasta temporária do Windows com Python 3.14.7.
+As dependências foram instaladas exclusivamente pelo `requirements.txt`.
+O `pip check` não encontrou inconsistências, e os dez casos de teste passaram
+nesse ambiente, sem avisos na saída apresentada.
+
+Essa verificação foi realizada no mesmo computador, com os arquivos atuais do
+projeto. Ela confirma a preparação das dependências e a execução da suíte em
+um ambiente virtual novo; não comprova instalação em outros computadores,
+outros sistemas operacionais ou a partir de uma clonagem independente.
+
 ## Arquitetura
 
 A aplicação é uma API local em Python, com FastAPI e SQLite. As operações
@@ -284,7 +297,7 @@ de implementação nesta entrega:
 - Ampliar os testes para atualização e exclusão de identificadores inexistentes,
   remoção da descrição, retorno de concluída para pendente e filtros sem resultados.
 - Automatizar a execução dos testes no GitHub Actions.
-- Verificar a instalação e a execução em um ambiente limpo.
+- Verificar a instalação a partir de uma clonagem independente e em outros ambientes.
 - Conforme novas necessidades, avaliar busca, paginação e uma interface própria.
 
 Recursos como múltiplos usuários, prioridades, prazos e notificações exigiriam

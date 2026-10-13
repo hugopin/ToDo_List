@@ -6,9 +6,16 @@ from app import database
 from app.main import app
 
 
-def test_create_task_starts_pending(tmp_path, monkeypatch):
+@pytest.fixture
+def temporary_database(tmp_path, monkeypatch):
+    """Aponta a aplicação para um banco temporário exclusivo de cada teste."""
+    path = tmp_path / "tasks.db"
+    monkeypatch.setattr(database, "DATABASE_PATH", path)
+    return path
+
+
+def test_create_task_starts_pending(temporary_database):
     """Uma tarefa criada recebe identificador e começa pendente."""
-    monkeypatch.setattr(database, "DATABASE_PATH", tmp_path / "tasks.db")
 
     with TestClient(app) as client:
         response = client.post(
@@ -29,9 +36,8 @@ def test_create_task_starts_pending(tmp_path, monkeypatch):
 
 
 @pytest.mark.parametrize("title", ["", "   "])
-def test_create_task_rejects_blank_title(title, tmp_path, monkeypatch):
+def test_create_task_rejects_blank_title(title, temporary_database):
     """Títulos vazios são rejeitados sem salvar uma tarefa."""
-    monkeypatch.setattr(database, "DATABASE_PATH", tmp_path / "tasks.db")
 
     with TestClient(app) as client:
         response = client.post("/tasks", json={"title": title})
@@ -45,9 +51,8 @@ def test_create_task_rejects_blank_title(title, tmp_path, monkeypatch):
         assert listing.json() == []
 
 
-def test_get_nonexistent_task_returns_404(tmp_path, monkeypatch):
+def test_get_nonexistent_task_returns_404(temporary_database):
     """Consultar um identificador inexistente retorna um erro claro."""
-    monkeypatch.setattr(database, "DATABASE_PATH", tmp_path / "tasks.db")
 
     with TestClient(app) as client:
         response = client.get("/tasks/999")
@@ -56,9 +61,8 @@ def test_get_nonexistent_task_returns_404(tmp_path, monkeypatch):
     assert response.json() == {"detail": "Tarefa não encontrada."}
 
 
-def test_update_title_preserves_omitted_fields(tmp_path, monkeypatch):
+def test_update_title_preserves_omitted_fields(temporary_database):
     """Editar somente o título preserva os outros campos e salva a alteração."""
-    monkeypatch.setattr(database, "DATABASE_PATH", tmp_path / "tasks.db")
 
     with TestClient(app) as client:
         created = client.post(
@@ -85,9 +89,8 @@ def test_update_title_preserves_omitted_fields(tmp_path, monkeypatch):
         assert saved.json() == expected
 
 
-def test_delete_task_returns_204_and_removes_task(tmp_path, monkeypatch):
+def test_delete_task_returns_204_and_removes_task(temporary_database):
     """Excluir uma tarefa retorna uma resposta vazia e impede nova consulta."""
-    monkeypatch.setattr(database, "DATABASE_PATH", tmp_path / "tasks.db")
 
     with TestClient(app) as client:
         created = client.post("/tasks", json={"title": "Teste de exclusão"})
@@ -107,9 +110,8 @@ def test_delete_task_returns_204_and_removes_task(tmp_path, monkeypatch):
         assert repeated.json() == {"detail": "Tarefa não encontrada."}
 
 
-def test_list_tasks_filters_by_completion(tmp_path, monkeypatch):
+def test_list_tasks_filters_by_completion(temporary_database):
     """A listagem retorna todas as tarefas ou somente a situação solicitada."""
-    monkeypatch.setattr(database, "DATABASE_PATH", tmp_path / "tasks.db")
 
     with TestClient(app) as client:
         pending = client.post("/tasks", json={"title": "Tarefa pendente"})
@@ -138,9 +140,8 @@ def test_list_tasks_filters_by_completion(tmp_path, monkeypatch):
         assert completed_tasks.json() == [completed_task]
 
 
-def test_task_persists_after_application_restart(tmp_path, monkeypatch):
+def test_task_persists_after_application_restart(temporary_database):
     """Uma tarefa continua disponível após reiniciar a aplicação."""
-    monkeypatch.setattr(database, "DATABASE_PATH", tmp_path / "tasks.db")
 
     with TestClient(app) as client:
         created = client.post(
@@ -158,10 +159,9 @@ def test_task_persists_after_application_restart(tmp_path, monkeypatch):
 
 @pytest.mark.parametrize("method", ["POST", "PATCH"])
 def test_unknown_fields_are_rejected_without_changing_tasks(
-    method, tmp_path, monkeypatch
+    method, temporary_database
 ):
     """Campos desconhecidos causam erro sem criar ou modificar tarefas."""
-    monkeypatch.setattr(database, "DATABASE_PATH", tmp_path / "tasks.db")
 
     with TestClient(app) as client:
         created = client.post("/tasks", json={"title": "Título original"})

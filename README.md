@@ -168,7 +168,8 @@ Os dez casos verificam:
 
 Cada caso utiliza um banco SQLite em uma pasta temporária, separado do
 `tasks.db` local. No teste de persistência, as duas inicializações usam o mesmo
-banco temporário. Os testes ficam em `tests/test_tasks.py`.
+banco temporário. A fixture `temporary_database` centraliza a configuração do
+caminho e mantém um banco separado por caso. Os testes ficam em `tests/test_tasks.py`.
 
 ## Arquitetura
 
@@ -280,8 +281,6 @@ de implementação nesta entrega:
 
 - Ampliar os testes para atualização e exclusão de identificadores inexistentes,
   remoção da descrição, retorno de concluída para pendente e filtros sem resultados.
-- Centralizar a preparação do banco temporário em uma fixture compartilhada,
-  reduzindo repetição entre os testes.
 - Avaliar a atualização do cliente de testes para resolver o aviso de descontinuação.
 - Automatizar a execução dos testes no GitHub Actions.
 - Verificar a instalação e a execução em um ambiente limpo.

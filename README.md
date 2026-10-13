@@ -302,3 +302,9 @@ de implementação nesta entrega:
 
 Recursos como múltiplos usuários, prioridades, prazos e notificações exigiriam
 novas regras e uma revisão do escopo antes de serem incorporados.
+
+## Licença
+
+Este projeto é disponibilizado sob a [licença MIT](LICENSE).
+Copyright (c) 2026 hugopin. As dependências e a apostila do curso mantêm suas
+próprias licenças e condições de uso.

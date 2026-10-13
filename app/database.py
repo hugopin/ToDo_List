@@ -71,6 +71,7 @@ def get_task(task_id: int) -> dict | None:
 
 def update_task(task_id: int, changes: dict) -> dict | None:
     """Altera os campos enviados e retorna a tarefa, se ela existir."""
+    # Os nomes de colunas vêm desta lista fixa; os valores usam parâmetros SQL.
     allowed_fields = ("title", "description", "completed")
     fields = [field for field in allowed_fields if field in changes]
 

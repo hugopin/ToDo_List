@@ -2,6 +2,7 @@ from pydantic import BaseModel, ConfigDict, field_validator
 
 
 def validate_title(value: str) -> str:
+    """Remove espaços das extremidades e rejeita um título sem conteúdo."""
     title = value.strip()
     if not title:
         raise ValueError("O título não pode estar vazio.")

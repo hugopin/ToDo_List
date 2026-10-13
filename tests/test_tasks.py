@@ -154,3 +154,30 @@ def test_task_persists_after_application_restart(tmp_path, monkeypatch):
         response = restarted_client.get(f"/tasks/{original['id']}")
         assert response.status_code == 200
         assert response.json() == original
+
+
+@pytest.mark.parametrize("method", ["POST", "PATCH"])
+def test_unknown_fields_are_rejected_without_changing_tasks(
+    method, tmp_path, monkeypatch
+):
+    """Campos desconhecidos causam erro sem criar ou modificar tarefas."""
+    monkeypatch.setattr(database, "DATABASE_PATH", tmp_path / "tasks.db")
+
+    with TestClient(app) as client:
+        created = client.post("/tasks", json={"title": "Título original"})
+        assert created.status_code == 201
+        original = created.json()
+        path = "/tasks" if method == "POST" else f"/tasks/{original['id']}"
+
+        response = client.request(
+            method, path, json={"title": "Novo título", "titel": "Campo desconhecido"}
+        )
+        assert response.status_code == 422
+        assert any(
+            error["type"] == "extra_forbidden" and error["loc"] == ["body", "titel"]
+            for error in response.json()["detail"]
+        )
+
+        listing = client.get("/tasks")
+        assert listing.status_code == 200
+        assert listing.json() == [original]

@@ -136,6 +136,11 @@ Consultar, editar ou excluir um identificador inexistente retorna 404:
 }
 ```
 
+Campos desconhecidos no corpo de criação ou edição são rejeitados com código
+422. Por exemplo, `titel` em vez de `title` causa um erro de validação e nenhuma
+tarefa é criada ou alterada. Na criação, envie somente `title` e `description`;
+o identificador e a conclusão inicial são definidos pela aplicação.
+
 ## Testes
 
 Na raiz do projeto, com a `.venv` ativa e as dependências instaladas, execute:
@@ -144,11 +149,11 @@ Na raiz do projeto, com a `.venv` ativa e as dependências instaladas, execute:
 python -m pytest tests/test_tasks.py -v
 ```
 
-O resultado esperado é `8 passed`. A opção `-v` mostra o nome e o resultado de
+O resultado esperado é `10 passed`. A opção `-v` mostra o nome e o resultado de
 cada caso. Não é necessário iniciar o Uvicorn: os testes usam o `TestClient`
 do FastAPI para enviar requisições diretamente à aplicação.
 
-Os oito casos verificam:
+Os dez casos verificam:
 
 - Criação com identificador gerado e situação inicial pendente.
 - Rejeição de título vazio.
@@ -158,6 +163,8 @@ Os oito casos verificam:
 - Exclusão com retorno 204 e erros 404 nas tentativas posteriores.
 - Listagem com filtros de pendentes e concluídas.
 - Persistência entre encerramento e nova inicialização do ciclo de vida da aplicação.
+- Rejeição de campos desconhecidos na criação, sem salvar uma nova tarefa.
+- Rejeição de campos desconhecidos na edição, preservando a tarefa existente.
 
 Cada caso utiliza um banco SQLite em uma pasta temporária, separado do
 `tasks.db` local. No teste de persistência, as duas inicializações usam o mesmo
@@ -241,7 +248,7 @@ antes de continuar a implementação.
 ### Validação e limites do relato
 
 As funcionalidades foram experimentadas em `/docs`, e os oito casos da suíte
-automatizada passaram no ambiente local. A IA também executou verificações em
+automatizada inicial passaram no ambiente local. A IA também executou verificações em
 bancos temporários durante a implementação. Esses resultados cobrem os cenários
 descritos na seção de testes e não garantem ausência de falhas em todos os usos.
 
@@ -262,7 +269,7 @@ gerenciamento básico de tarefas, com persistência em SQLite.
 - A interação é feita pela documentação do FastAPI; não existe interface visual própria.
 - A listagem permite filtrar por conclusão, mas não possui busca por texto ou paginação.
 - Não foram realizados testes de carga, concorrência ou instalação em outros sistemas operacionais.
-- Os oito casos automatizados cobrem os cenários documentados, mas não todas as
+- Os dez casos automatizados cobrem os cenários documentados, mas não todas as
   combinações de entradas e operações. A persistência é verificada reiniciando o
   ciclo de vida da aplicação dentro do processo de testes.
 

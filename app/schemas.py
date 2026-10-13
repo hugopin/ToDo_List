@@ -1,4 +1,4 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, ConfigDict, field_validator
 
 
 def validate_title(value: str) -> str:
@@ -11,6 +11,8 @@ def validate_title(value: str) -> str:
 class TaskCreate(BaseModel):
     """Dados necessários para criar uma tarefa."""
 
+    model_config = ConfigDict(extra="forbid")
+
     title: str
     description: str | None = None
 
@@ -22,6 +24,8 @@ class TaskCreate(BaseModel):
 
 class TaskUpdate(BaseModel):
     """Dados enviados para alterar apenas parte de uma tarefa."""
+
+    model_config = ConfigDict(extra="forbid")
 
     title: str | None = None
     description: str | None = None

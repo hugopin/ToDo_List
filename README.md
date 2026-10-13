@@ -188,3 +188,64 @@ flowchart TD
 
 O diagrama representa o fluxo de uma requisição válida. Dados inválidos recebem
 uma resposta de erro antes de executar a operação no banco.
+
+## Uso de inteligência artificial no desenvolvimento
+
+Este miniprojeto foi desenvolvido com apoio do Codex, por meio de uma interação
+conversacional integrada ao ambiente de desenvolvimento. O trabalho seguiu a
+proposta da apostila M4 da especialização da UFG: utilizar IA generativa durante
+o desenvolvimento, compreender as sugestões e validar os resultados.
+
+A orientação dada ao assistente desde o início foi explicar cada etapa antes
+de propor alterações, avançar uma etapa por vez e aguardar meu retorno.
+Essa restrição permitiu acompanhar as decisões e experimentar cada operação
+antes de continuar a implementação.
+
+### Participação da IA e do desenvolvedor
+
+| Etapa | Apoio da IA | Minha participação |
+|---|---|---|
+| Escopo e planejamento | Análise da apostila, proposta do contrato HTTP e organização dos arquivos | Definição das funcionalidades, regras e limites da primeira versão; aprovação das propostas |
+| Implementação | Escrita incremental dos modelos Pydantic, operações SQLite e endpoints FastAPI, com explicações | Acompanhamento das etapas e experimentação das operações pela documentação interativa |
+| Diagnóstico do ambiente | Interpretação de mensagens de erro e consulta à documentação oficial | Execução dos comandos, consulta aos eventos do Windows e decisão sobre a configuração do computador |
+| Testes | Criação de casos automatizados e verificação com bancos temporários | Execução da suíte no meu terminal e compartilhamento dos resultados antes de avançar |
+| Documentação e Git | Elaboração do diagrama Mermaid, instruções e sugestões de mensagens de commit | Execução de comandos Git, conferência dos arquivos preparados e publicação dos commits no GitHub |
+
+### Decisões e aprendizados
+
+- **Controlar o escopo:** a aplicação ficou limitada a uma API local de tarefas.
+  Exemplos da apostila com frontend, PostgreSQL ou integração com modelos de IA
+  não foram incorporados à primeira versão. O uso de IA ocorreu no processo de
+  desenvolvimento; a API não faz chamadas a modelos de linguagem.
+- **Descrever o comportamento antes de programar:** os endpoints, campos e
+  códigos HTTP foram combinados antes da implementação, servindo de referência
+  para os testes e para a documentação.
+- **Distinguir omissão de ausência de valor:** na edição parcial, um campo
+  omitido mantém o valor existente; `description: null` remove a descrição.
+  Essa diferença foi explicada e a preservação de campos recebeu um teste.
+- **Verificar além da resposta imediata:** a suíte consulta dados após alterações,
+  confirma que títulos inválidos não são salvos e verifica persistência entre
+  duas inicializações do ciclo de vida da aplicação.
+- **Usar erros como material de estudo:** o bloqueio do componente compilado do
+  Pydantic foi investigado com o traceback e os eventos de integridade do Windows.
+  Uma reinstalação não resolveu; a importação funcionou após minha decisão de
+  desativar o Smart App Control. Essa foi uma decisão específica do meu ambiente,
+  não uma instrução de instalação do projeto.
+- **Reconhecer limites das sugestões:** a alternativa de instalar WSL foi
+  questionada por acrescentar complexidade ao primeiro projeto. O desenvolvimento
+  continuou no Windows, mostrando a importância de avaliar as propostas da IA.
+- **Entender o controle de versão:** salvar um arquivo, prepará-lo com `git add`,
+  registrar um commit e enviá-lo com `git push` são etapas distintas. A atualização
+  do README no GitHub tornou essa diferença visível durante o trabalho.
+
+### Validação e limites do relato
+
+As funcionalidades foram experimentadas em `/docs`, e os oito casos da suíte
+automatizada passaram no ambiente local. A IA também executou verificações em
+bancos temporários durante a implementação. Esses resultados cobrem os cenários
+descritos na seção de testes e não garantem ausência de falhas em todos os usos.
+
+O acompanhamento humano incluiu a definição do escopo, a avaliação das propostas,
+a execução dos comandos e a conferência dos resultados. Não houve medição formal
+de tempo ou comparação com desenvolvimento sem IA; portanto, não são apresentados
+percentuais ou estimativas de ganho de produtividade.

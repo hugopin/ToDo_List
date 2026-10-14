@@ -1,6 +1,18 @@
 # ToDo List
 
-Projeto de lista de tarefas desenvolvido na especialização da UFG.
+API local de lista de tarefas desenvolvida na especialização da UFG, com Python,
+FastAPI e SQLite. Permite criar, consultar, editar, concluir, filtrar e excluir
+tarefas, mantendo os dados entre execuções.
+
+## Versão de entrega
+
+O escopo da primeira versão está concluído e identificado pela
+[tag v1.0.0](https://github.com/hugopin/ToDo_List/tree/v1.0.0).
+A entrega inclui persistência em SQLite, validação de entradas, tratamento de
+tarefas inexistentes, dez casos de teste automatizados e licença MIT.
+
+A documentação interativa em `/docs` é a interface prevista para esta versão.
+Uma interface própria e as demais melhorias ficam para uma versão futura.
 
 ## Instalação
 
@@ -48,6 +60,22 @@ esse arquivo seja mantido.
 
 Para encerrar o servidor, pressione `Ctrl+C` no terminal. Em uma nova sessão,
 ative novamente a `.venv` antes de executar o comando do servidor.
+
+### Execução fora do VS Code
+
+O VS Code não é necessário para executar a aplicação. Abra o PowerShell,
+entre na pasta do projeto e use diretamente o Python do ambiente virtual:
+
+```powershell
+cd "C:\caminho\para\ToDo_List"
+.\.venv\Scripts\python.exe -m uvicorn app.main:app
+```
+
+Substitua o caminho pela localização do seu projeto. Essa forma dispensa ativar
+a `.venv`. Mantenha o terminal aberto e acesse `http://127.0.0.1:8000/docs`.
+Encerre com `Ctrl+C`. Se já houver um servidor na porta 8000, encerre-o antes
+de iniciar outro. A opção `--reload` é útil durante o desenvolvimento e foi
+omitida neste comando de execução.
 
 ## Endpoints e exemplos de uso
 
@@ -263,9 +291,10 @@ antes de continuar a implementação.
 
 ### Validação e limites do relato
 
-As funcionalidades foram experimentadas em `/docs`, e os oito casos da suíte
-automatizada inicial passaram no ambiente local. A IA também executou verificações em
-bancos temporários durante a implementação. Esses resultados cobrem os cenários
+As funcionalidades foram experimentadas em `/docs`, e os dez casos da suíte
+automatizada passaram no ambiente local e em um ambiente virtual novo.
+A IA também executou verificações em bancos temporários durante a implementação.
+Esses resultados cobrem os cenários
 descritos na seção de testes e não garantem ausência de falhas em todos os usos.
 
 O acompanhamento humano incluiu a definição do escopo, a avaliação das propostas,

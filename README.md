@@ -14,6 +14,9 @@ tarefas inexistentes, dez casos de teste automatizados e licença MIT.
 A documentação interativa em `/docs` é a interface prevista para esta versão.
 Uma interface própria e as demais melhorias ficam para uma versão futura.
 
+Os atalhos de automação descritos abaixo foram acrescentados após a tag
+`v1.0.0` e estão disponíveis na branch `main`.
+
 ## Instalação
 
 As instruções abaixo usam Windows com PowerShell. O projeto foi desenvolvido
@@ -76,6 +79,42 @@ a `.venv`. Mantenha o terminal aberto e acesse `http://127.0.0.1:8000/docs`.
 Encerre com `Ctrl+C`. Se já houver um servidor na porta 8000, encerre-o antes
 de iniciar outro. A opção `--reload` é útil durante o desenvolvimento e foi
 omitida neste comando de execução.
+
+## Automação de tarefas
+
+Após criar a `.venv`, é possível usar os atalhos abaixo sem ativá-la.
+O script PowerShell é a opção para Windows sem instalar `make`.
+
+Se a política do PowerShell bloquear arquivos `.ps1`, use `manage.cmd` com a
+mesma ação, por exemplo: `.\manage.cmd test`. Essa alternativa não exige
+alterar a política de execução. Também estão disponíveis `help`, `install`,
+`run` e `check`; o comando `run` do `.cmd` usa a porta 8000.
+
+| Ação | PowerShell | Makefile (com GNU Make instalado) |
+|---|---|---|
+| Mostrar ajuda | `.\manage.ps1 help` | `make help` |
+| Instalar dependências | `.\manage.ps1 install` | `make install` |
+| Iniciar a API local | `.\manage.ps1 run` | `make run` |
+| Executar os dez testes | `.\manage.ps1 test` | `make test` |
+| Conferir dependências | `.\manage.ps1 check` | `make check` |
+
+Execute os comandos na raiz do projeto. O `manage.ps1` também pode ser chamado
+pelo caminho completo a partir de outra pasta. Ele retorna um código de erro
+se o comando Python falhar e não altera a política de execução do PowerShell.
+
+Para usar uma porta diferente: `.\manage.ps1 run -Port 8001` ou
+`make run PORT=8001`. O endereço padrão é `http://127.0.0.1:8000/docs`.
+Mantenha o terminal aberto durante a execução e encerre com `Ctrl+C`.
+
+O Makefile seleciona o Python da `.venv` conforme o sistema operacional;
+os caminhos para outros sistemas ainda não foram validados. Não há alvo de
+formatação, pois o projeto não adotou um formatador automático nesta versão.
+Os comandos manuais das seções anteriores continuam disponíveis.
+
+Na validação local, `manage.cmd help`, `manage.cmd check` e `manage.cmd test`
+foram executados: as dependências estavam consistentes e os dez testes passaram.
+O GNU Make não estava instalado e a política do ambiente bloqueou o `.ps1`;
+portanto, esses dois caminhos não foram validados por execução.
 
 ## Endpoints e exemplos de uso
 

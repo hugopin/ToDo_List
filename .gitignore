@@ -39,3 +39,6 @@ yarn-error.log*
 # Arquivos do sistema operacional
 .DS_Store
 Thumbs.db
+
+# Apostila do curso — somente uso local
+/M4-LICMIAG_ES-GenAI_Ebook.pdf
